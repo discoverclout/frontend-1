@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import {
   BackendApiService,
   BalanceEntryResponse,
+  DeSoNode,
   PostEntryResponse,
   TutorialStatus,
   User,
@@ -226,6 +227,8 @@ export class GlobalVarsService {
   referralUSDCents: number = 0;
 
   buyETHAddress: string = "";
+
+  nodes: { [id: number]: DeSoNode };
 
   // Whether the user will see prices on the feed "buy" component.
   showPriceOnFeed: boolean = true;
@@ -1462,11 +1465,16 @@ export class GlobalVarsService {
         .GetReferralInfoForReferralHash(environment.verificationEndpointHostname, referralHash)
         .subscribe((res) => {
           const referralInfo = res.ReferralInfoResponse.Info;
-          if (
+          const countrySignUpBonus = res.CountrySignUpBonus;
+          if (!countrySignUpBonus.AllowCustomReferralAmount) {
+            this.referralUSDCents = countrySignUpBonus.ReferralAmountOverrideUSDCents;
+          } else if (
             res.ReferralInfoResponse.IsActive &&
             (referralInfo.TotalReferrals < referralInfo.MaxReferrals || referralInfo.MaxReferrals == 0)
           ) {
             this.referralUSDCents = referralInfo.RefereeAmountUSDCents;
+          } else {
+            this.referralUSDCents = countrySignUpBonus.ReferralAmountOverrideUSDCents;
           }
         });
     }

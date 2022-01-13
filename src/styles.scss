@@ -440,6 +440,8 @@ $green-font-color: #19B028;
 .mr-10px { margin-right: 10px; }
 .mb-10px { margin-bottom: 10px; }
 .ml-10px { margin-left: 10px; }
+.mx-10px { margin-left: 10px; margin-right: 10px; }
+.my-10px { margin-top: 10px; margin-bottom: 10px; }
 
 .m-12px { margin: 12px; }
 .mt-12px { margin-top: 12px; }
@@ -1850,6 +1852,12 @@ tab-selector {
   }
 }
 
+.left-bar-more-container {
+  background: var(--tile-secondary-bg);
+  bottom: 0px;
+  border-radius: 10px;
+}
+
 .left-bar-mobile__translucent-background {
   z-index: 99 !important; // Needs to be higher than the bottom bar and staked posts.
   position: fixed;
@@ -2377,6 +2385,10 @@ sign-up {
   background-position: center;
 }
 
+.modal-open {
+  padding-right: 0px !important;
+}
+
 .modal-header .feed-create-comment-form__close {
   margin: 0;
   padding: 0;
@@ -2397,6 +2409,16 @@ sign-up {
   span {
     margin: 0px 8px;
   }
+}
+
+trends {
+  .icon-diamond {
+    margin-left: 0px !important;
+  }
+}
+
+.trends-scroll-container {
+  height: calc(100vh - 210px) !important;
 }
 
 .trend-box {
@@ -2995,15 +3017,20 @@ feed-post-dropdown {
   background: var(--highlight);
 }
 
-
 .left-bar-button {
   height: 56px;
   margin-left: 12px;
   font-weight: 600;
   font-size: 17px;
   color: var(--text-secondary);
+  &:hover {
+    color: var(--highlight);
+  }
   a {
     color: var(--text-secondary);
+    &:hover {
+      color: var(--highlight);
+    }
   }
   i-feather {
     margin-right: 20px;
@@ -3011,6 +3038,15 @@ feed-post-dropdown {
     height: 20px;
     position: relative;
     top: -1px;
+  }
+}
+
+.left-bar-link {
+  &:hover {
+    color: var(--highlight) !important;
+    a {
+      color: var(--highlight) !important;
+    }
   }
 }
 
@@ -4810,6 +4846,10 @@ input {
   padding: 0px 5px;
 }
 
+.bg-tile {
+  background-color: var(--tile-bg) !important;
+}
+
 .bg-light {
   background-color: var(--background-secondary) !important;
 }
@@ -5267,6 +5307,17 @@ sell-nft-modal {
   &.disabled-button {
     background: var(--tile-bg)
   }
+}
+
+.trend-dropdown-button {
+  border-radius: 12px;
+  border: none;
+  border: 1px solid var(--border);
+  background: var(--tile-secondary-bg);
+  height: 48px;
+  padding: 12px;
+  color: var(--text-secondary);
+  font-size: 15px;
 }
 
 .nft-modal-separator {

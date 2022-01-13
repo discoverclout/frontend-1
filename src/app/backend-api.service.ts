@@ -150,6 +150,9 @@ export class BackendRoutes {
   // Wyre routes.
   static RoutePathGetWyreWalletOrderQuotation = "/api/v0/get-wyre-wallet-order-quotation";
   static RoutePathGetWyreWalletOrderReservation = "/api/v0/get-wyre-wallet-order-reservation";
+
+  // Onboarding routes
+  static RoutePathSubscribeToOnboardingEmails = "/api-internal/v0/onboarding-email-subscription";
 }
 
 export class Transaction {
@@ -379,6 +382,12 @@ export class NFTBidData {
   BidEntryResponses: NFTBidEntryResponse[];
 }
 
+export class DeSoNode {
+  Name: string;
+  URL: string;
+  Owner: string;
+}
+
 type GetUserMetadataResponse = {
   HasPhoneNumber: boolean;
   CanCreateProfile: boolean;
@@ -394,6 +403,13 @@ type GetUsersStatelessResponse = {
   UserList: User[];
   DefaultFeeRateNanosPerKB: number;
   ParamUpdaters: { [k: string]: boolean };
+};
+
+type CountryLevelSignUpBonus = {
+  AllowCustomReferralAmount: boolean;
+  ReferralAmountOverrideUSDCents: number;
+  AllowCustomKickbackAmount: boolean;
+  KickbackAmountOverrideUSDCents: number;
 };
 
 @Injectable({
@@ -1071,17 +1087,33 @@ export class BackendApiService {
     ReceiverPublicKeyBase58Check: string,
     NFTPostHashHex: string,
     SerialNumber: number,
-    EncryptedUnlockableText: string,
+    UnencryptedUnlockableText: string,
     MinFeeRateNanosPerKB: number
   ): Observable<any> {
-    let request = this.post(endpoint, BackendRoutes.RoutePathTransferNFT, {
-      SenderPublicKeyBase58Check,
-      ReceiverPublicKeyBase58Check,
-      NFTPostHashHex,
-      SerialNumber,
-      EncryptedUnlockableText,
-      MinFeeRateNanosPerKB,
-    });
+    let request = UnencryptedUnlockableText
+      ? this.identityService.encrypt({
+        ...this.identityService.identityServiceParamsForKey(SenderPublicKeyBase58Check),
+        recipientPublicKey: ReceiverPublicKeyBase58Check,
+        message: UnencryptedUnlockableText,
+      })
+      : of({ encryptedMessage: "" });
+    request = request.pipe(
+      switchMap((encrypted) => {
+        const EncryptedUnlockableText = encrypted.encryptedMessage;
+        return this.post(endpoint, BackendRoutes.RoutePathTransferNFT, {
+          SenderPublicKeyBase58Check,
+          ReceiverPublicKeyBase58Check,
+          NFTPostHashHex,
+          SerialNumber,
+          EncryptedUnlockableText,
+          MinFeeRateNanosPerKB,
+        }).pipe(
+          map((request) => {
+            return { ...request };
+          })
+        );
+      })
+    );
 
     return this.signAndSubmitTransaction(endpoint, request, SenderPublicKeyBase58Check);
   }
@@ -2237,7 +2269,10 @@ export class BackendApiService {
     });
   }
 
-  GetReferralInfoForReferralHash(endpoint: string, ReferralHash: string): Observable<any> {
+  GetReferralInfoForReferralHash(
+    endpoint: string,
+    ReferralHash: string
+  ): Observable<{ ReferralInfoResponse: any; CountrySignUpBonus: CountryLevelSignUpBonus }> {
     return this.post(endpoint, BackendRoutes.RoutePathGetReferralInfoForReferralHash, {
       ReferralHash,
     });
@@ -2444,5 +2479,11 @@ export class BackendApiService {
       }
     }
     return errorMessage;
+  }
+
+  OnboardingEmailSubscribe(endpoint: string, PublicKeyBase58Check: string): Observable<any> {
+    return this.jwtPost(endpoint, BackendRoutes.RoutePathSubscribeToOnboardingEmails, PublicKeyBase58Check, {
+      PublicKeyBase58Check,
+    });
   }
 }

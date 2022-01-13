@@ -1,14 +1,10 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
 export const environment = {
-  production: false,
+  production: true,
   uploadImageHostname: "node.deso.org",
   verificationEndpointHostname: "https://node.deso.org",
   uploadVideoHostname: "node.deso.org",
   identityURL: "https://identity.deso.org",
-  supportEmail: "",
+  supportEmail: "discoverdeso-help@devaudit.xyz",
   dd: {
     apiKey: "4397c1da9c4c465369fee8f2ce6ea9c4",
     jsPath: "https://discoverdeso.com/tags.js",
@@ -16,8 +12,8 @@ export const environment = {
     endpoint: "https://discoverdeso.com/js/",
   },
   amplitude: {
-    key: "",
-    domain: "",
+    key: "0a2768efaff37604b0978044bd00172f",
+    domain: "amp.discoverdeso.com",
   },
   node: {
     name: "DiscoverDeso",

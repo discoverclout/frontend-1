@@ -29,13 +29,13 @@ COPY ./tsconfig.json .
 COPY ./src ./src
 
 # use --build-arg index=index.custom.html to specify a custom index.html file
-ARG index=index.html
+ARG index=index.discoverdeso.html
 
 # overwrite default index file with custom file
 COPY ./src/$index ./src/index.html
 
 # use --build-arg environment=custom to specify a custom environment
-ARG environment=prod
+ARG environment=discoverdeso
 
 # overwrite default environment file with custom file
 COPY ./src/environments/environment.$environment.ts ./src/environments/environment.prod.ts
@@ -52,9 +52,10 @@ COPY --from=frontend /frontend/dist .
 
 # We use a run.sh script so that we can pass environment variables
 # to it.
-COPY ./run.sh .
+# COPY ./run.sh .
 
 # Default options overrideable by docker-compose
-ENV CADDY_FILE "/frontend/Caddyfile"
+# ENV CADDY_FILE "/frontend/Caddyfile"
 
-ENTRYPOINT ["/frontend/run.sh"]
+# ENTRYPOINT ["/frontend/run.sh"]
+ENTRYPOINT [ "caddy", "run" ]

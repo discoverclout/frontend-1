@@ -4,8 +4,8 @@
     auto_https off
 }
 
-# Bind to port 80
-:80
+# Bind to port 8080
+:8080
 
 # Serve static files
 file_server
@@ -28,6 +28,8 @@ header @html Cache-Control no-store
 header @html Content-Security-Policy "
   default-src 'self';
   connect-src 'self'
+    api.discoverdeso.com
+    discoverdeso.com
     node.deso.org
     amp.deso.org
     bithunt.deso.org
